@@ -4,31 +4,39 @@
 
 int main(int argc_var, char *argv_t[])
 {
-    QCoreApplication A(argc_var, argv_t); // Creating an instance of Qt Core application
+    // Creating an instance of Qt Core
+    QCoreApplication A(argc_var, argv_t); 
+    
+    // Creating a client
+    QMqttClient Client; 
 
-    QMqttClient Client; // Creating an MQTT client
-
-    Client.setHostname("broker.emqx.io"); // Setting the MQTT broker host
-    Client.setPort(1883); // Setting the MQTT broker port
+    // Setting the broker host
+    Client.setHostname("broker.emqx.io"); 
+    // Setting the broker port
+    Client.setPort(1883); 
 
     QObject::connect(&Client, &QMqttClient::connected, [&](void) {
         qDebug() << "Connected to MQTT broker.";
 
         QString s_topic = "/ynov/bordeaux/";
         qint32 qos_var = 0;
-        if (!Client.subscribe(s_topic, qos_var)) { // Subscribing to an MQTT topic
-            qDebug() << "Error subscribing to topic:" << s_topic;
+        
+        // Subscribing to a topic
+        if (!Client.subscribe(s_topic, qos_var)) { 
+            qDebug() << "Error while subscribing to :" << s_topic;
             return 1;
         } else {
             qDebug() << "Subscribed to topic:" << s_topic;
         }
 
         QString s_message = "Message Leo";
-        if (!Client.publish(s_topic, s_message.toUtf8(), qos_var)) { // Publishing an MQTT message
+        
+        // Publishing a message
+        if (!Client.publish(s_topic, s_message.toUtf8(), qos_var)) { 
             qDebug() << "Published message:" << s_message << "to topic:" << s_topic;
             return 1;
         } else {
-            qDebug() << "Error publishing message:" << s_message << "to topic:" << s_topic;
+            qDebug() << "Error while publishing :" << s_message << "to topic:" << s_topic;
         }
     });
 
@@ -36,7 +44,9 @@ int main(int argc_var, char *argv_t[])
         qDebug() << "Received message:" << message << "from topic:" << topic.name();
     });
 
-    Client.connectToHost(); // Connecting to the MQTT broker
+    // Connecting to the MQTT broker
+    Client.connectToHost(); 
 
-    return A.exec(); // Starting the Qt Core event loop
+    // Starting the Qt Core event loop
+    return A.exec(); 
 }
